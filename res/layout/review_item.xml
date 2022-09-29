@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/reviewCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="#7A7A79"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/reviewTitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_toLeftOf="@id/deleteImage1"
+            android:padding="4dp"
+            android:text="리뷰 제목"
+            android:textColor="@color/white"
+            android:textSize="17dp" />
+
+        <TextView
+            android:id="@+id/reviewTextGrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reviewTitle1"
+            android:layout_marginTop="4dp"
+            android:layout_toLeftOf="@id/reviewRatingBar"
+            android:padding="4dp"
+            android:text="평점 : "
+            android:textColor="@color/white"
+            android:textSize="17dp" />
+
+        <RatingBar
+            android:id="@+id/reviewRatingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reviewTitle1"
+            android:layout_marginTop="12dp"
+            android:layout_toLeftOf="@id/reviewedTime1"
+            android:max="10"
+            android:numStars="5"
+            android:stepSize="0.1" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/reviewedTime1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reviewTitle1"
+            android:layout_alignParentRight="true"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="작성 시간"
+            android:textColor="@color/white"
+            android:textSize="17dp" />
+
+        <ImageView
+            android:id="@+id/deleteImage1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_baseline_delete_24"
+            app:tint="@color/white" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
