@@ -35,7 +35,7 @@ class MovieDetailActivity : AppCompatActivity(), YouTubePlayer.OnInitializedList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
 
-        supportActionBar!!.title = "더무비"
+        supportActionBar!!.title = "더 무비"
 
         val poster = "https://image.tmdb.org/t/p/w500" + intent.getStringExtra("poster") // 영화 포스터 저장 경로
         val title = intent.getStringExtra("title") // 영화 제목

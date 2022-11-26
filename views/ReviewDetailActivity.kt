@@ -10,23 +10,33 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.movieapplication.R
+import com.example.movieapplication.database.DatabaseInstance
 import com.example.movieapplication.models.Review
+import com.example.movieapplication.repository.ReviewRepository
 import com.example.movieapplication.utils.Utils
 import com.example.movieapplication.viewmodels.ReviewViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class ReviewDetailActivity : AppCompatActivity() {
-    lateinit var reviewTitleEdit: EditText
-    lateinit var reviewContentEdit: EditText
-    lateinit var ratingBar: RatingBar
-    lateinit var button: Button
-    lateinit var viewModel: ReviewViewModel
-    var reviewId = -1
+    private lateinit var reviewTitleEdit: EditText
+    private lateinit var reviewContentEdit: EditText
+    private lateinit var ratingBar: RatingBar
+    private lateinit var button: Button
+    private lateinit var viewModel: ReviewViewModel
+    private var reviewId = -1
+
+    private lateinit var reviewDB: DatabaseReference
+    private val auth: FirebaseAuth by lazy { Firebase.auth }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review_detail)
 
-        supportActionBar!!.title = "영화 리뷰 작성"
+        supportActionBar!!.title = "영화 감상문 작성"
 
         reviewTitleEdit = findViewById(R.id.titleEditText)
         reviewContentEdit = findViewById(R.id.contentEditText)
@@ -46,9 +56,9 @@ class ReviewDetailActivity : AppCompatActivity() {
             reviewTitleEdit.setText(reviewTitle)
             reviewContentEdit.setText(reviewContent)
             ratingBar.rating = reviewRating.toFloat() / 2
-            button.text = "리뷰 수정" // 사용자가 리뷰 편집 모드로 진입할 시
+            button.text = "감상문 수정" // 사용자가 감상문 편집 모드로 진입할 시
         } else {
-            button.text = "리뷰 등록" // 사용자가 리뷰 등록 모드로 진입할 시
+            button.text = "감상문 등록" // 사용자가 감상문 등록 모드로 진입할 시
         }
 
         reviewTitleEdit.setOnKeyListener { view, i, keyEvent ->
@@ -68,6 +78,7 @@ class ReviewDetailActivity : AppCompatActivity() {
             if (!b) { Utils.hideKeyboard(this, view) }
         }
 
+        val userId = auth.currentUser?.uid.orEmpty()
         button.setOnClickListener {
             val currentReviewTitle = reviewTitleEdit.text.toString()
             val currentReviewContent = reviewContentEdit.text.toString()
@@ -83,7 +94,20 @@ class ReviewDetailActivity : AppCompatActivity() {
                     )
                     updateReview.id = reviewId
                     viewModel.updateReview(updateReview)
-                    Toast.makeText(this, "리뷰가 수정되었습니다.", Toast.LENGTH_LONG).show()
+
+                    reviewDB =
+                        Firebase.database.reference.child("users").child(userId).child("reviews")
+                            .child(reviewId.toString())
+                    val review = mutableMapOf<String, Any>()
+                    review["id"] = reviewId
+                    review["title"] = currentReviewTitle
+                    review["content"] = currentReviewContent
+                    review["time"] = Utils.getCurrentDate()
+                    review["rating"] = currentRating
+                    reviewDB.updateChildren(review)
+                    // 서버에 수정된 감상문 정보 저장(Firebase Realtime Database)
+
+                    Toast.makeText(this, "감상문이 수정되었습니다.", Toast.LENGTH_LONG).show()
                     startActivity(Intent(applicationContext, ReviewMainActivity::class.java))
                     this.finish()
                 } else {
@@ -97,9 +121,27 @@ class ReviewDetailActivity : AppCompatActivity() {
                         Utils.getCurrentDate(),
                         currentRating
                     )
-                    viewModel.insertReview(updateReview)
-                    Toast.makeText(this, "리뷰가 등록되었습니다.", Toast.LENGTH_LONG).show()
-                    startActivity(Intent(applicationContext, ReviewMainActivity::class.java))
+
+                    val dao = DatabaseInstance.getInstance(application).reviewDao()
+                    val repository = ReviewRepository(dao)
+                    val id = repository.insertTransaction(updateReview)
+
+                    reviewDB =
+                        Firebase.database.reference.child("users").child(userId).child("reviews")
+                            .child(id.toString())
+                    val review = mutableMapOf<String, Any>()
+                    review["id"] = id
+                    review["title"] = currentReviewTitle
+                    review["content"] = currentReviewContent
+                    review["time"] = Utils.getCurrentDate()
+                    review["rating"] = currentRating
+                    reviewDB.updateChildren(review)
+                    // 서버에 새로운 감상문 정보 저장(Firebase Realtime Database)
+
+                    Toast.makeText(this, "감상문이 등록되었습니다.", Toast.LENGTH_LONG).show()
+                    val intent = Intent(applicationContext, ReviewMainActivity::class.java)
+                    intent.putExtra("type", "Edit")
+                    startActivity(intent)
                     this.finish()
                 } else {
                     Toast.makeText(this, "제목과 내용을 모두 입력해주세요.", Toast.LENGTH_LONG).show()

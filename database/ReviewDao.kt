@@ -17,6 +17,18 @@ interface ReviewDao {
     @Update
     fun update(review: Review)
 
+    @Transaction
+    fun insertTransaction(review: Review): Int {
+        insert(review)
+        return getMaxId()
+    }
+
+    @Query("DELETE FROM reviewTable")
+    fun deleteAll()
+
     @Query("SELECT * FROM reviewTable ORDER BY id DESC")
     fun getAll(): LiveData<List<Review>>
+
+    @Query("SELECT MAX(id) FROM reviewTable")
+    fun getMaxId(): Int
 }

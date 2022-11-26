@@ -19,4 +19,12 @@ class ReviewRepository(private val reviewDao: ReviewDao) {
     fun update(review: Review) {
         reviewDao.update(review)
     }
+
+    fun insertTransaction(review: Review): Int {
+        return reviewDao.insertTransaction(review)
+    }
+
+    fun deleteAll() {
+        reviewDao.deleteAll()
+    }
 }

@@ -18,7 +18,6 @@ class Review(
 
     @ColumnInfo(name = "rating") // 영화 개인 평점
     val rating: Double
-
 ) {
     @PrimaryKey(autoGenerate = true)
     var id = 0 // 리뷰 id

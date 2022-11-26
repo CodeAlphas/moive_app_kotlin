@@ -32,4 +32,5 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
     fun insertReview(review: Review) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(review)
     } // 새로운 사용자 영화 리뷰를 추가하는 메소드
+
 }

@@ -20,7 +20,7 @@ abstract class DatabaseInstance : RoomDatabase() {
                     context.applicationContext,
                     DatabaseInstance::class.java,
                     "review_database"
-                ).build()
+                ).allowMainThreadQueries().build()
                 INSTANCE = instance
                 instance
             }
