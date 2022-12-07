@@ -7,19 +7,18 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapplication.R
 import com.example.movieapplication.adapters.ReviewRecyclerViewAdapter
 import com.example.movieapplication.database.DatabaseInstance
+import com.example.movieapplication.databinding.ActivityReviewMainBinding
 import com.example.movieapplication.models.Review
 import com.example.movieapplication.repository.ReviewRepository
 import com.example.movieapplication.utils.ReviewClickDeleteInterface
 import com.example.movieapplication.utils.ReviewClickInterface
 import com.example.movieapplication.viewmodels.ReviewViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -27,41 +26,43 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClickDeleteInterface {
-    private lateinit var reviewRecyclerView: RecyclerView
-    private lateinit var addFloatingActionButton: FloatingActionButton
-    private lateinit var reviewViewModel: ReviewViewModel
 
+    private lateinit var binding: ActivityReviewMainBinding
+    private lateinit var reviewViewModel: ReviewViewModel
     private lateinit var reviewDB: DatabaseReference
     private val auth: FirebaseAuth by lazy { Firebase.auth }
     private val userId: String by lazy { auth.currentUser?.uid.orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_review_main)
+
+        binding = ActivityReviewMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportActionBar!!.title = "영화 감상문"
 
-        val type = intent.getStringExtra("type")
-        initRecyclerView(type)
-
-        addFloatingActionButton = findViewById(R.id.reviewAddFloatingButton)
-        addFloatingActionButton.setOnClickListener {
-            val intent = Intent(this@ReviewMainActivity, ReviewDetailActivity::class.java)
-            startActivity(intent)
-            this.finish()
-        }
+        initRecyclerView()
+        getReviewsFromServer()
+        initReviewAddFloatingButton()
     }
 
-    private fun initRecyclerView(type: String?) {
-        reviewRecyclerView = findViewById(R.id.reviewRecyclerView)
-        reviewRecyclerView.layoutManager = LinearLayoutManager(this)
+    private fun initRecyclerView() {
+        binding.reviewRecyclerView.layoutManager = LinearLayoutManager(this)
         val reviewRecyclerViewAdapter =
             ReviewRecyclerViewAdapter(LayoutInflater.from(this), this, this, this)
-        reviewRecyclerView.adapter = reviewRecyclerViewAdapter
-
+        binding.reviewRecyclerView.adapter = reviewRecyclerViewAdapter
         reviewViewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ReviewViewModel::class.java)
+        reviewViewModel.allReview.observe(this@ReviewMainActivity, Observer { List ->
+            List?.let {
+                reviewRecyclerViewAdapter.updateReviewList(it)
+            }
+        })
+    }
+
+    private fun getReviewsFromServer() {
+        val type = intent.getStringExtra("type")
 
         reviewDB = Firebase.database.reference.child("users").child(userId).child("reviews")
         reviewDB.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -70,27 +71,27 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
                     for (data in snapshot.children) {
                         val id = data.key.toString().toInt()
                         val title = data.child("title").value.toString()
+                        val image = data.child("image").value.toString()
                         val content = data.child("content").value.toString()
                         val time = data.child("time").value.toString()
                         val rating = data.child("rating").value.toString().toDouble()
-                        val review = Review(title, content, time, rating)
+                        val review = Review(title, image, content, time, rating)
                         review.id = id
                         reviewViewModel.insertReview(review)
-                    }
-                }
-                reviewViewModel.allReview.observe(getContext()) { list ->
-                    list?.let {
-                        reviewRecyclerViewAdapter.updateReviewList(it)
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {}
-        }) // 서버에 저장된 감상문 정보 가져오기(Firebase Realtime Database)
+        }) // 서버에 저장된 감상문 정보 가져오기(Firebase Realtime Database) : MainActivity -> ReviewMainActivity 이동시
     }
 
-    private fun getContext(): LifecycleOwner {
-        return this
+    private fun initReviewAddFloatingButton() {
+        binding.reviewAddFloatingButton.setOnClickListener {
+            val intent = Intent(this@ReviewMainActivity, ReviewDetailActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }
     }
 
     override fun onDeleteIconClick(review: Review) {
@@ -106,6 +107,7 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
         val intent = Intent(this@ReviewMainActivity, ReviewDetailActivity::class.java)
         intent.putExtra("reviewType", "Edit")
         intent.putExtra("reviewTitle", review.title)
+        intent.putExtra("reviewImage", review.image)
         intent.putExtra("reviewContent", review.content)
         intent.putExtra("reviewId", review.id)
         intent.putExtra("rating", review.rating)

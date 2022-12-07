@@ -12,7 +12,7 @@ abstract class DatabaseInstance : RoomDatabase() {
 
     companion object {
         @Volatile
-        private var INSTANCE: DatabaseInstance? = null // 영화 리뷰정보를 관리하기 위한 RoomDatabase 객체
+        private var INSTANCE: DatabaseInstance? = null // 영화 감상문 정보를 관리하기 위한 RoomDatabase 객체
 
         fun getInstance(context: Context): DatabaseInstance {
             return INSTANCE ?: synchronized(this) {

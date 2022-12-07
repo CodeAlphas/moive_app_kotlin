@@ -8,19 +8,19 @@ class ReviewRepository(private val reviewDao: ReviewDao) {
 
     val allReview: LiveData<List<Review>> = reviewDao.getAll()
 
-    fun insert(review: Review) {
+    suspend fun insert(review: Review) {
         reviewDao.insert(review)
     }
 
-    fun delete(review: Review) {
+    suspend fun delete(review: Review) {
         reviewDao.delete(review)
     }
 
-    fun update(review: Review) {
+    suspend fun update(review: Review) {
         reviewDao.update(review)
     }
 
-    fun insertTransaction(review: Review): Int {
+    suspend fun insertTransaction(review: Review): Int {
         return reviewDao.insertTransaction(review)
     }
 

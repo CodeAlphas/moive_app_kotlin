@@ -9,13 +9,6 @@
     android:orientation="vertical"
     tools:context=".views.JoinActivity">
 
-    <ImageView
-        android:layout_width="260dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="110dp"
-        android:layout_marginBottom="120dp"
-        android:src="@drawable/the_movie" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -23,6 +16,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -36,7 +30,7 @@
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/id_input"
+                android:id="@+id/idInput"
                 android:layout_width="356dp"
                 android:layout_height="58dp"
                 android:layout_marginBottom="20dp"
@@ -47,7 +41,7 @@
                 android:textSize="18dp" />
 
             <EditText
-                android:id="@+id/pw_input1"
+                android:id="@+id/pwInput1"
                 android:layout_width="356dp"
                 android:layout_height="58dp"
                 android:layout_marginBottom="10dp"
@@ -59,10 +53,10 @@
                 android:textSize="18dp" />
 
             <EditText
-                android:id="@+id/pw_input2"
+                android:id="@+id/pwInput2"
                 android:layout_width="356dp"
                 android:layout_height="58dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/input_bg"
                 android:hint="비밀번호 확인"
                 android:inputType="textPassword"
@@ -71,7 +65,16 @@
                 android:textSize="18dp" />
 
             <TextView
-                android:id="@+id/join_btn"
+                android:id="@+id/checkPwTextView"
+                android:layout_width="356dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:gravity="left"
+                android:text="비밀번호와 일치하지 않습니다."
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/joinBtn"
                 android:layout_width="356dp"
                 android:layout_height="58dp"
                 android:layout_marginBottom="20dp"
@@ -82,7 +85,7 @@
                 android:textSize="20dp" />
 
             <TextView
-                android:id="@+id/login_btn"
+                android:id="@+id/loginBtn"
                 android:layout_width="356dp"
                 android:layout_height="62dp"
                 android:gravity="right"

@@ -16,11 +16,10 @@ class FragmentViewPagerAdapter(
     }
 
     override fun createFragment(position: Int): Fragment {
-
         return when (position) {
             0 -> FragmentPopularMovieList()
             1 -> FragmentTopRatedMovieList()
             else -> FragmentSearchMovie()
-        } // position 별로 return될 Fragment 설정
+        } // position 별로 반환될 Fragment 설정
     }
 }

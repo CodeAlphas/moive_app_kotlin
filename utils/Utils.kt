@@ -13,6 +13,8 @@ class Utils {
 
     companion object {
 
+        const val TAG: String = "로그"
+
         // 기기의 가로 px을 반환해주는 메소드
         fun getScreenWidth(context: Context): Int {
             val metrics = context.resources.displayMetrics
