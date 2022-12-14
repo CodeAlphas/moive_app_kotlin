@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
 class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClickDeleteInterface {
 
@@ -32,6 +35,7 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
     private lateinit var reviewDB: DatabaseReference
     private val auth: FirebaseAuth by lazy { Firebase.auth }
     private val userId: String by lazy { auth.currentUser?.uid.orEmpty() }
+    private val storage: FirebaseStorage by lazy { Firebase.storage }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +62,11 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
             List?.let {
                 reviewRecyclerViewAdapter.updateReviewList(it)
             }
+            if (reviewRecyclerViewAdapter.itemCount == 0) {
+                showCenterTextView()
+            } else {
+                hideCenterTextView()
+            }
         })
     }
 
@@ -75,7 +84,8 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
                         val content = data.child("content").value.toString()
                         val time = data.child("time").value.toString()
                         val rating = data.child("rating").value.toString().toDouble()
-                        val review = Review(title, image, content, time, rating)
+                        val storageFileName = data.child("storageFileName").value.toString()
+                        val review = Review(title, image, content, time, rating, storageFileName)
                         review.id = id
                         reviewViewModel.insertReview(review)
                     }
@@ -84,6 +94,14 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
 
             override fun onCancelled(error: DatabaseError) {}
         }) // 서버에 저장된 감상문 정보 가져오기(Firebase Realtime Database) : MainActivity -> ReviewMainActivity 이동시
+    }
+
+    private fun showCenterTextView() {
+        binding.textViewCenter.isVisible = true
+    }
+
+    private fun hideCenterTextView() {
+        binding.textViewCenter.isVisible = false
     }
 
     private fun initReviewAddFloatingButton() {
@@ -101,7 +119,12 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
         reviewDB = Firebase.database.reference.child("users").child(userId).child("reviews")
             .child(review.id.toString())
         reviewDB.removeValue()
-    } // 작성한 감상문 아이템에서 X 이미지를 누르면 발생하는 이벤트 처리를 위한 메소드
+
+        if (review.storageFileName != "") {
+            storage.reference.child("review/photo").child(review.storageFileName).delete()
+        } // storage에 저장된 이미지 삭제
+
+   } // 작성한 감상문 아이템에서 X 이미지를 누르면 발생하는 이벤트 처리를 위한 메소드
 
     override fun onIconClick(review: Review) {
         val intent = Intent(this@ReviewMainActivity, ReviewDetailActivity::class.java)
@@ -111,6 +134,7 @@ class ReviewMainActivity : AppCompatActivity(), ReviewClickInterface, ReviewClic
         intent.putExtra("reviewContent", review.content)
         intent.putExtra("reviewId", review.id)
         intent.putExtra("rating", review.rating)
+        intent.putExtra("storageFileName", review.storageFileName)
         startActivity(intent)
         this.finish()
     } // 작성한 감상문 아이템(X 이미지를 제외한 부분)을 누르면 발생하는 이벤트 처리를 위한 메소드

@@ -11,8 +11,8 @@ import com.example.movieapplication.adapters.CreditsRecyclerViewAdapter
 import com.example.movieapplication.databinding.ActivityMovieDetailBinding
 import com.example.movieapplication.models.CreditsFromServer
 import com.example.movieapplication.models.VideosFromServer
+import com.example.movieapplication.utils.Credentials.YOUTUBE_API_KEY
 import com.example.movieapplication.utils.Utils.Companion.TAG
-import com.example.movieapplication.utils.YOUTUBE_API_KEY
 import com.example.movieapplication.viewmodels.MovieViewModel
 import com.google.android.youtube.player.*
 

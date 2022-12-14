@@ -6,11 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movieapplication.R
 import com.example.movieapplication.adapters.TopRatedMoviesRecyclerViewAdapter
 import com.example.movieapplication.databinding.TopRatedMovieListFragmentBinding
 import com.example.movieapplication.models.MoviesFromServer
@@ -23,8 +27,13 @@ class FragmentTopRatedMovieList : Fragment() {
 
     private var _binding: TopRatedMovieListFragmentBinding? = null
     private val binding get() = _binding!!
+    private var buttonClicked = false
     private lateinit var topRatedMoviesRecyclerViewAdapter: TopRatedMoviesRecyclerViewAdapter
     private lateinit var viewModel: MovieViewModel
+    private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.rotate_open_anim) }
+    private val rotateClose: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.rotate_close_anim) }
+    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.from_bottom_anim) }
+    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.to_bottom_anim) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,8 +72,16 @@ class FragmentTopRatedMovieList : Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     binding.floatingButton.show() // 리싸이클러뷰 스크롤이 정지되어 있으면 플로팅 액션 버튼을 보이게 한다
+                    if (buttonClicked) {
+                        binding.writeFloatingButton.show()
+                        binding.locationFloatingButton.show()
+                    }
                 } else {
                     binding.floatingButton.hide() // 리싸이클러뷰 스크롤이 움직이면 플로팅 액션 버튼을 숨긴다
+                    if (buttonClicked) {
+                        binding.writeFloatingButton.hide()
+                        binding.locationFloatingButton.hide()
+                    }
                 }
             }
         })
@@ -86,7 +103,42 @@ class FragmentTopRatedMovieList : Fragment() {
 
     private fun initFloatingActionButton() {
         binding.floatingButton.setOnClickListener {
+            addButtonClicked()
+        }
+        binding.writeFloatingButton.setOnClickListener {
             startActivity(Intent(requireContext(), ReviewMainActivity::class.java))
+        }
+        binding.locationFloatingButton.setOnClickListener {
+            startActivity(Intent(requireContext(), MapActivity::class.java))
+        }
+
+    }
+
+    private fun addButtonClicked() {
+        setVisibility()
+        setAnimation()
+        buttonClicked = !buttonClicked
+    }
+
+    private fun setVisibility() {
+        if (!buttonClicked) {
+            binding.writeFloatingButton.isVisible = true
+            binding.locationFloatingButton.isVisible = true
+        } else {
+            binding.writeFloatingButton.isVisible = false
+            binding.locationFloatingButton.isVisible = false
+        }
+    }
+
+    private fun setAnimation() {
+        if (!buttonClicked) {
+            binding.writeFloatingButton.startAnimation(fromBottom)
+            binding.locationFloatingButton.startAnimation(fromBottom)
+            binding.floatingButton.startAnimation(rotateOpen)
+        } else {
+            binding.writeFloatingButton.startAnimation(toBottom)
+            binding.locationFloatingButton.startAnimation(toBottom)
+            binding.floatingButton.startAnimation(rotateClose)
         }
     }
 }

@@ -5,75 +5,91 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    app:cardBackgroundColor="#7A7A79"
-    app:cardCornerRadius="6dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="6dp">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/review_item_background">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reviewTitle1"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_toLeftOf="@id/deleteImage1"
+            android:layout_margin="5dp"
+            android:lines="2"
             android:padding="4dp"
             android:text="리뷰 제목"
             android:textColor="@color/white"
-            android:textSize="17dp" />
+            android:textSize="17dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/deleteImage1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/deleteImage1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_baseline_delete_24"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/reviewTextGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/reviewTitle1"
-            android:layout_marginTop="4dp"
-            android:layout_toLeftOf="@id/reviewRatingBar"
+            android:layout_marginBottom="4dp"
             android:padding="4dp"
             android:text="평점 : "
             android:textColor="@color/white"
-            android:textSize="17dp" />
+            android:textSize="17dp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/reviewRatingBar"
+            app:layout_constraintTop_toBottomOf="@id/reviewTitle1" />
 
         <RatingBar
             android:id="@+id/reviewRatingBar"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/reviewTitle1"
-            android:layout_marginTop="12dp"
-            android:layout_toLeftOf="@id/reviewedTime1"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="10dp"
             android:max="10"
             android:numStars="5"
-            android:stepSize="0.1" />
+            android:stepSize="0.1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/reviewedTime1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reviewedTime1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/reviewTitle1"
-            android:layout_alignParentRight="true"
-            android:layout_margin="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
             android:padding="4dp"
             android:text="작성 시간"
             android:textColor="@color/white"
-            android:textSize="17dp" />
+            android:textSize="17dp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewTitle1" />
 
-        <ImageView
-            android:id="@+id/deleteImage1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="5dp"
-            android:padding="4dp"
-            android:src="@drawable/ic_baseline_delete_24"
-            app:tint="@color/white" />
+        <View
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:background="@drawable/review_end_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

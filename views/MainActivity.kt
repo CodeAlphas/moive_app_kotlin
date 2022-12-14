@@ -19,6 +19,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val tabTitles = arrayListOf("인기", "높은 평점", "검색")
+    private val tabIcons = arrayListOf(
+        R.drawable.ic_baseline_movie_popular_24,
+        R.drawable.ic_baseline_top_movies_24,
+        R.drawable.ic_baseline_search_24
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,7 @@ class MainActivity : AppCompatActivity() {
                     else -> supportActionBar!!.title = "영화 검색"
                 } // 탭 클릭시 해당 탭에 맞게 앱바(액션바)의 텍스트 변경
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         }) // 탭 레이아웃 설정
@@ -62,20 +69,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun linkViewPagerAndTabLayout() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = "인기"
-                    tab.icon = getDrawable(R.drawable.ic_baseline_movie_popular_24)
-                }
-                1 -> {
-                    tab.text = "높은 평점"
-                    tab.icon = getDrawable(R.drawable.ic_baseline_top_movies_24)
-                }
-                2 -> {
-                    tab.text = "검색"
-                    tab.icon = getDrawable(R.drawable.ic_baseline_search_24)
-                }
-            }
+            tab.text = tabTitles[position]
+            tab.icon = getDrawable(tabIcons[position])
         }.attach() // 탭 레이아웃과 뷰페이저 연결
     }
 

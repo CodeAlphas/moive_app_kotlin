@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
             id = binding.idInput.text.toString()
             pw = binding.pwInput.text.toString()
 
-            if (id.isBlank()|| pw.isBlank()) {
+            if (id.isBlank() || pw.isBlank()) {
                 Toast.makeText(this, "로그인에 실패했습니다. 이메일 또는 비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT)
                     .show()
             } else {
