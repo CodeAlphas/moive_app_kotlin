@@ -3,12 +3,12 @@
 안드로이드 영화 앱 '더무비' 프로젝트 관련 레포지토리입니다.
 
 더무비는 사용자에게 각종 지표에 따른 영화 정보를 제공하고 사용자가 영화에 대한 
-간단한 리뷰를 작성할 수 있도록 도와주는 안드로이드 애플리케이션 개발 프로젝트입니다.
+감상문을 작성할 수 있도록 도와주는 안드로이드 애플리케이션 개발 프로젝트입니다.
 ```
 
 ## 개발 기간 및 기여도
 ```
-- 2022-09-20 ~ 2022-09-28+ (개인 프로젝트)
+- 2022-09-20 ~ 비정기적으로 진행중 (개인 프로젝트)
 ```
 
 ## 주요 기능
@@ -24,7 +24,7 @@
    3. 영화 검색 
    4. 영화 상세정보
  
-🖊 영화 감상문
+🖊 영화 감상문(이미지 등록 가능)
    1. 영화 감상문 작성
    2. 영화 감상문 삭제
    3. 영화 감상문 수정
@@ -32,19 +32,14 @@
 
 ## 사용 기술
 ```
-   - Room
-   - Firebase Authentication
-   - Firebase Realtime Database
-   - Retrofit
-   - Glide
-   - Recycler View
-   - View Pager
-   - Tab Layout
-   - Floating Action Button
-   - MVVM Design Pattern
-   - Singleton Design Pattern
-   - Youtube Android Player API
-   - TMDB(The Movie Database) API
+   - Language : Kotlin
+   - Architecture : MVVM
+   - Networking : Retrofit
+   - Asynchronous : Coroutines
+   - JetPack : LiveData, ViewModel, DataBinding
+   - Local DB : Room
+   - Image : Glide
+   - other : Firebase(Authentication, Realtime Database, Storage), Youtube Android Player API, TMDB(The Movie Database) API
 ```
 
 ## 사용 방법 및 시연 영상
@@ -55,7 +50,7 @@
 {Youtube Data API 키} -> "자신의 Youtube Data API 키"
 ```
 - 시연 영상은 아래 유튜브 링크에서 확인하실 수 있습니다. 
-- [시연 영상 유튜브 링크](https://youtu.be/OQYaZoqhnok)
+- [시연 영상 유튜브 링크 : 구버전](https://youtu.be/OQYaZoqhnok)
 
 ## 한계 및 개선 방법
 - 프로젝트의 MovieDetailActivity에서 영화 동영상 재생을 위한 YouTubePlayerView를 사용하기 위해서는 MovieDetailActivity가 YouTubeBaseActivity를 상속받아야 합니다. 하지만, YouTubeBaseActivity를 상속받은 상태에서는 해당 Activity 내에서 MVVM 패턴을 위한 ViewModel 객체를 사용할 수 없습니다.
