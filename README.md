@@ -42,7 +42,7 @@
    - Architecture : MVVM
    - Networking : Retrofit
    - Asynchronous : Coroutines
-   - JetPack : LiveData, ViewModel, DataBinding
+   - JetPack : LiveData, ViewModel, ViewBinding
    - Local DB : Room
    - Image : Glide
    - Firebase : Authentication, Realtime Database, Storage, Cloud Messaging
